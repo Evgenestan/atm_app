@@ -1,102 +1,23 @@
 import 'package:atm_app/colors.dart';
 import 'package:atm_app/main/available_bills_widget.dart';
 import 'package:atm_app/main/bloc/main_bloc.dart';
+import 'package:atm_app/main/dispensing_fragment.dart';
+import 'package:atm_app/main/input_fragment.dart';
 import 'package:atm_app/main/model/available_bills_model.dart';
-import 'package:atm_app/main/model/response_model.dart';
 import 'package:atm_app/widgets/body.dart';
-import 'package:atm_app/widgets/buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:yalo_assets/lib.dart';
 
 class MainView extends StatelessWidget {
-  final MainBloc _mainBloc = MainBloc();
   final sumController = TextEditingController();
-  void _giveOut() {
-    _mainBloc.giveOut.add(double.tryParse(sumController.text));
-  }
 
-  Widget _buildFirstBlock() {
-    return Center(
-      child: Column(
-        children: [
-          const Text(
-            'Введите сумму',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          Container(
-            width: 200,
-            child: TextFormField(
-              controller: sumController,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-              ),
-            ),
-          ),
-          const SizedBox(height: 100),
-          SizedBox(
-            width: 200,
-            height: 60,
-            child: MyButton(
-              title: 'Выдать сумму',
-              onPressed: _giveOut,
-            ),
-          ),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSecondBlock() {
-    Widget _buildWidget(Response response) {
-      if (response == null) {
-        return const SizedBox();
-      }
-      if (response.canGive) {
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Банкомат выдал следующие купюры',
-                style: TextStyle(color: secondTextColor),
-              ),
-            ),
-            AvailableBillsWidget(availableBills: response?.availableBills),
-            const Divider(thickness: 10, color: dividerColor),
-          ],
-        );
-      }
-      return Column(
-        children: const [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 50),
-            child: Text(
-              'Банкомат не может выдать, запрашиваемую сумму',
-              style: TextStyle(color: buttonColor, fontSize: 20, fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Divider(thickness: 10, color: dividerColor),
-        ],
-      );
-    }
-
-    return StreamBuilder<Response>(
-      builder: (_, response) => Container(
-        child: _buildWidget(response.data),
-      ),
-      stream: _mainBloc.response,
-    );
-  }
-
-  Widget _buildThirdBlock() {
+  Widget _buildBalance(Stream atmBalance) {
     return StreamBuilder<AvailableBills>(
-        stream: _mainBloc.atmBalance,
+        stream: atmBalance,
         builder: (context, snapshot) {
           if (snapshot?.data == null) {
             return const SizedBox();
@@ -107,26 +28,26 @@ class MainView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.centerLeft,
                 child: const Text(
-                  'Банкомат выдал следующие купюры',
+                  'Баланс банкомата',
                   style: TextStyle(color: secondTextColor),
                 ),
               ),
               AvailableBillsWidget(availableBills: snapshot?.data),
-              const Divider(thickness: 10, color: dividerColor),
             ],
           );
         });
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
+    final _mainBloc = Provider.of<MainBloc>(context, listen: false);
     return ListView(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: 30),
       children: [
-        _buildFirstBlock(),
+        InputFragment(sumController),
         const Divider(thickness: 10, color: dividerColor),
-        _buildSecondBlock(),
-        _buildThirdBlock(),
+        DispensingFragment(),
+        _buildBalance(_mainBloc.atmBalance),
       ],
     );
   }
@@ -136,13 +57,13 @@ class MainView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: const [Icon(Icons.calculate), Text('ATM')],
+          children: [SvgPicture.asset(Assets.logoImageS), const SizedBox(width: 5), const Text('ATM')],
         ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.topRight, colors: <Color>[startGradientColor, endGradientColor])),
         ),
       ),
-      body: Body(child: _buildBody()),
+      body: Body(child: _buildBody(context)),
     );
   }
 }

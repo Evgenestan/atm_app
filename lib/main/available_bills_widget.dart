@@ -19,7 +19,7 @@ class AvailableBillsWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               '${available[item]} X $item рублей',
-              style: const TextStyle(color: startGradientColor, fontSize: 16, fontWeight: FontWeight.w500),
+              style: const TextStyle(color: startGradientColor, fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ),
         );

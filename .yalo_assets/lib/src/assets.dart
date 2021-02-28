@@ -13,6 +13,8 @@ String get bottomBackground => bottomBackgroundS;
 static const String bottomBackgroundS = 'assets/image/bottom_background.svg';
 String get upBackground => upBackgroundS;
 static const String upBackgroundS = 'assets/image/up_background.svg';
+String get logoImage => logoImageS;
+static const String logoImageS = 'assets/image/logo_image.svg';
     final Map<Asset, String> _preloadedAssets = Map();
     bool isPreloaded = false;
     Future<bool> preloadAssets() async {

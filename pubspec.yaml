@@ -27,6 +27,7 @@ dependencies:
   yalo: ^1.0.1
   yalo_assets:
     path: ./.yalo_assets
+  provider: ^4.3.3
 
 
   # The following adds the Cupertino Icons font to your application.
