@@ -1,3 +1,4 @@
+import 'package:atm_app/colors.dart';
 import 'package:atm_app/main/model/available_bills_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,19 +10,20 @@ class AvailableBillsWidget extends StatelessWidget {
 
   List<Widget> _buildItems() {
     final available = availableBills.available;
-    /*return Text(
-      '${availableBills.available.values.elementAt(count)} X ${availableBills.available.keys.elementAt(count)} рублей',
-      textAlign: TextAlign.center,
-    );*/
     final widgets = <Widget>[];
     for (int item in available.keys) {
-      widgets.add(Container(
-        width: 150,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          '${available[item]} X $item рублей',
-        ),
-      ));
+      if (available[item] != 0) {
+        widgets.add(
+          Container(
+            width: 150,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '${available[item]} X $item рублей',
+              style: const TextStyle(color: startGradientColor, fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+          ),
+        );
+      }
     }
     return widgets;
   }
@@ -30,17 +32,10 @@ class AvailableBillsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(
-        vertical: 15,
+      padding: const EdgeInsets.symmetric(
+        vertical: 13,
         horizontal: 20,
       ),
-      // child: GridView.builder(
-      //   physics: NeverScrollableScrollPhysics(),
-      //   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 100, mainAxisSpacing: 0),
-      //   itemBuilder: _buildItem,
-      //   padding: EdgeInsets.zero,
-      //   itemCount: availableBills.available.length,
-      // ),
       child: Wrap(
         children: _buildItems(),
       ),

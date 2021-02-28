@@ -1,11 +1,13 @@
 import 'package:atm_app/colors.dart';
 import 'package:atm_app/main/available_bills_widget.dart';
 import 'package:atm_app/main/bloc/main_bloc.dart';
+import 'package:atm_app/main/model/available_bills_model.dart';
 import 'package:atm_app/main/model/response_model.dart';
 import 'package:atm_app/widgets/body.dart';
 import 'package:atm_app/widgets/buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 
 class MainView extends StatelessWidget {
   final MainBloc _mainBloc = MainBloc();
@@ -54,11 +56,33 @@ class MainView extends StatelessWidget {
         return const SizedBox();
       }
       if (response.canGive) {
-        return AvailableBillsWidget(availableBills: response?.availableBills);
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                'Банкомат выдал следующие купюры',
+                style: TextStyle(color: secondTextColor),
+              ),
+            ),
+            AvailableBillsWidget(availableBills: response?.availableBills),
+            const Divider(thickness: 10, color: dividerColor),
+          ],
+        );
       }
-      return const Text(
-        'Банкомат не может выдать, запрашиваемую сумму',
-        style: TextStyle(color: buttonColor, fontSize: 24),
+      return Column(
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 50),
+            child: Text(
+              'Банкомат не может выдать, запрашиваемую сумму',
+              style: TextStyle(color: buttonColor, fontSize: 20, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Divider(thickness: 10, color: dividerColor),
+        ],
       );
     }
 
@@ -70,6 +94,30 @@ class MainView extends StatelessWidget {
     );
   }
 
+  Widget _buildThirdBlock() {
+    return StreamBuilder<AvailableBills>(
+        stream: _mainBloc.atmBalance,
+        builder: (context, snapshot) {
+          if (snapshot?.data == null) {
+            return const SizedBox();
+          }
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  'Банкомат выдал следующие купюры',
+                  style: TextStyle(color: secondTextColor),
+                ),
+              ),
+              AvailableBillsWidget(availableBills: snapshot?.data),
+              const Divider(thickness: 10, color: dividerColor),
+            ],
+          );
+        });
+  }
+
   Widget _buildBody() {
     return ListView(
       physics: const BouncingScrollPhysics(),
@@ -78,6 +126,7 @@ class MainView extends StatelessWidget {
         _buildFirstBlock(),
         const Divider(thickness: 10, color: dividerColor),
         _buildSecondBlock(),
+        _buildThirdBlock(),
       ],
     );
   }
