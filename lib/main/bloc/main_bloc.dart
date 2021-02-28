@@ -9,7 +9,6 @@ const defaultValues = [50, 100, 100, 5, 50, 40];
 class MainBloc {
   MainBloc({AvailableBills availableBills}) {
     _availableBills = availableBills ?? AvailableBills()
-      ..options = defaultOptions
       ..available = Map.fromIterables(defaultOptions, defaultValues);
     _outEvent.listen(_giveMoney);
   }
@@ -28,17 +27,18 @@ class MainBloc {
   void _giveMoney(double sum) {
     if (sum != null) {
       double _sum = sum;
-      final Map<int, int> _test = {};
-      for (int item in _availableBills.options) {
+      final Map<int, int> available = {};
+      for (int item in _availableBills.available.keys) {
         final howMany = _sum ~/ item;
         if (howMany > 0) {
-          _test[item] = howMany;
+          available[item] = howMany;
         }
         _sum -= howMany * item;
       }
-      print(_sum);
-      print(_test);
-      _inCounter.add(Response());
+      final availableBills = AvailableBills()..available = available;
+      _inCounter.add(Response()
+        ..availableBills = availableBills
+        ..canGive = _sum == 0);
     }
   }
 }

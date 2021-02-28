@@ -1,5 +1,4 @@
 class AvailableBills {
-  List<int> options = [];
   Map<int, int> available = {};
 }
 

@@ -1,15 +1,17 @@
 import 'package:atm_app/colors.dart';
+import 'package:atm_app/main/available_bills_widget.dart';
 import 'package:atm_app/main/bloc/main_bloc.dart';
+import 'package:atm_app/main/model/response_model.dart';
 import 'package:atm_app/widgets/body.dart';
 import 'package:atm_app/widgets/buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MainView extends StatelessWidget {
-  final MainBloc mainBloc = MainBloc();
+  final MainBloc _mainBloc = MainBloc();
   final sumController = TextEditingController();
   void _giveOut() {
-    mainBloc.giveOut.add(double.tryParse(sumController.text));
+    _mainBloc.giveOut.add(double.tryParse(sumController.text));
   }
 
   Widget _buildFirstBlock() {
@@ -46,6 +48,28 @@ class MainView extends StatelessWidget {
     );
   }
 
+  Widget _buildSecondBlock() {
+    Widget _buildWidget(Response response) {
+      if (response == null) {
+        return const SizedBox();
+      }
+      if (response.canGive) {
+        return AvailableBillsWidget(availableBills: response?.availableBills);
+      }
+      return const Text(
+        'Банкомат не может выдать, запрашиваемую сумму',
+        style: TextStyle(color: buttonColor, fontSize: 24),
+      );
+    }
+
+    return StreamBuilder<Response>(
+      builder: (_, response) => Container(
+        child: _buildWidget(response.data),
+      ),
+      stream: _mainBloc.response,
+    );
+  }
+
   Widget _buildBody() {
     return ListView(
       physics: const BouncingScrollPhysics(),
@@ -53,6 +77,7 @@ class MainView extends StatelessWidget {
       children: [
         _buildFirstBlock(),
         const Divider(thickness: 10, color: dividerColor),
+        _buildSecondBlock(),
       ],
     );
   }
