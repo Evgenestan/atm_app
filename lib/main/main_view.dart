@@ -32,7 +32,7 @@ class MainView extends StatelessWidget {
                   style: TextStyle(color: secondTextColor),
                 ),
               ),
-              AvailableBillsWidget(availableBills: snapshot?.data),
+              AvailableBillsView(availableBills: snapshot?.data),
             ],
           );
         });

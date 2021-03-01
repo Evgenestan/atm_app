@@ -3,8 +3,8 @@ import 'package:atm_app/main/model/available_bills_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AvailableBillsWidget extends StatelessWidget {
-  const AvailableBillsWidget({Key key, this.availableBills}) : super(key: key);
+class AvailableBillsView extends StatelessWidget {
+  const AvailableBillsView({Key key, this.availableBills}) : super(key: key);
 
   final AvailableBills availableBills;
 
@@ -19,7 +19,7 @@ class AvailableBillsWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               '${available[item]} X $item рублей',
-              style: const TextStyle(color: startGradientColor, fontSize: 15, fontWeight: FontWeight.w500),
+              style: const TextStyle(color: startGradientColor, fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         );

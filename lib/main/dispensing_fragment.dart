@@ -22,7 +22,7 @@ class DispensingFragment extends StatelessWidget {
               style: TextStyle(color: secondTextColor),
             ),
           ),
-          AvailableBillsWidget(availableBills: response?.availableBills),
+          AvailableBillsView(availableBills: response?.availableBills),
           const Divider(thickness: 10, color: dividerColor),
         ],
       );
