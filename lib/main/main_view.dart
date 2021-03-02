@@ -55,6 +55,7 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Row(
           children: [SvgPicture.asset(Assets.logoImageS), const SizedBox(width: 5), const Text('ATM')],
